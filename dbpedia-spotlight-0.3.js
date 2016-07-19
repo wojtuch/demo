@@ -44,13 +44,13 @@ function sortOffset(a,b){
      return parseInt(a["@offset"]) > parseInt(b["@offset"]) ? 1 : -1;
 };
 
-
 (function( $ ){
 
    var powered_by = "<div style='font-size: 9px; float: right'><a href='http://spotlight.dbpedia.org'>Powered by DBpedia Spotlight</a></div>";
 
    var settings = {      
-      'endpoint' : 'http://localhost:2223/rest',
+      //'endpoint' : 'http://localhost:2223/rest',
+      'endpoint' : 'http://localhost:32769/rest',
       'confidence' : 0.5,          //
       'support' : 0,
       'powered_by': 'yes',         // yes or no
