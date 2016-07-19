@@ -425,8 +425,10 @@ function run(method) {
         //$("#text_container").unbind('click');
         $(".action_button").attr("disabled", false);
         $('#edit_text_wrapper').hide();
-        $("#topic_info_container").css("display", "none");
-        myPieChart.destroy();
+        if (myPieChart != undefined) {
+            myPieChart.destroy();
+            $("#topic_info_container").css("display", "none");
+        }
         $.uniform.update(".action_button");
     });
 

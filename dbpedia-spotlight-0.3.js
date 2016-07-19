@@ -235,6 +235,9 @@ function sortOffset(a,b){
                    };
                    $(this).html(content);
 
+                   // topic inferencer connection
+                   ask_topic_inferencer(response);
+
                if(settings.callback != undefined) {
                    settings.callback(response);
                }

@@ -1,3 +1,13 @@
+/*
+    Turn the functionality of topic inference service on/off by setting 
+    the inferencer_active property to 1/0.
+*/
+var topic_inferencer_settings = {
+  'inferencer_active': 1,
+  'endpoint' : 'http://localhost:8182/inference-service',
+  'numTopics': 3
+};
+
 var myPieChart;
 
 function argSort(arr) {
@@ -18,22 +28,19 @@ function sort(arr) {
   return arr;
 };
 
-var topic_inferencer_settings = {
-  'endpoint' : 'http://localhost:8182/inference-service',
-  'numTopics': 3
-};
-
 function ask_topic_inferencer(spotlightAnnotationJSON) {
-  $.ajax({
-    type: "POST",
-    url: topic_inferencer_settings.endpoint+"/get-topics",
-    data: {"spotlightAnnotationJSON": JSON.stringify(spotlightAnnotationJSON)},
-    success: topic_inferencer_success_callback,
-    error: topic_inferencer_error_callback,
-    headers: {
-      "Accept": "application/json"
-    }
-  });
+  if (topic_inferencer_settings.inferencer_active == 1) {
+    $.ajax({
+      type: "POST",
+      url: topic_inferencer_settings.endpoint+"/get-topics",
+      data: {"spotlightAnnotationJSON": JSON.stringify(spotlightAnnotationJSON)},
+      success: topic_inferencer_success_callback,
+      error: topic_inferencer_error_callback,
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+  }
 }
 
 function topic_inferencer_error_callback(resp) {
