@@ -49,14 +49,19 @@ function topic_inferencer_error_callback(resp) {
 }
 
 function topic_inferencer_success_callback(resp) {
-  var predictions = sort(resp.predictions);
+  var predictions = sort(resp.predictions).slice(0,topic_inferencer_settings.numTopics);
+  predictions.forEach(function (item, idx){
+    predictions[idx].topicWordsCoverage.forEach(function (item2, idx2){
+      predictions[idx].topicWordsCoverage[idx2] = parseFloat(Math.round(predictions[idx].topicWordsCoverage[idx2] * 100) / 100).toFixed(2);
+    });
+  });
+  console.log(predictions);
   var labels = [];
-  for (var i=0; i<topic_inferencer_settings.numTopics; i++) {
-    labels.push("Topic "+(i+1));
-  }
   var distrs = [];
   for (var i=0; i<topic_inferencer_settings.numTopics; i++) {
-    distrs.push(predictions[i].topicProbability*100);
+    var label = predictions[i].topicLabel || "Topic "+(predictions[i].topicId+1);
+    labels.push(label);
+    distrs.push(parseFloat(Math.round(predictions[i].topicProbability*100 * 100) / 100).toFixed(2));
   }
   var data = {
     labels: labels,
@@ -76,8 +81,33 @@ function topic_inferencer_success_callback(resp) {
   };
   var ctx = $("#topic_chart");
   $("#topic_info_container").css("display", "block");
+  $("#topic_chart").css("height", "1500px");
+
   myPieChart = new Chart(ctx,{
       type: 'pie',
-      data: data
+      data: data,
+      predictions: predictions,
+      options: {
+          tooltipTemplate: function(v) {console.log(v); return v;},
+          tooltips: {
+            callbacks: {
+                label: function(tooltipItem, data) {
+                  var percentage = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+                  var label = data.labels[tooltipItem.index];
+                  var tooltipText = label +': '+ percentage+'%';
+                  var prediction = $(this)[0]._chart.config.predictions[tooltipItem.index];
+                  return tooltipText;
+                },
+                afterBody: function(tooltipItem, data) {
+                  var prediction = $(this)[0]._chart.config.predictions[tooltipItem[0].index];
+                  var body = [];
+                  for (var i = 0; i < prediction.topicWords.length; i++) {
+                    body.push(prediction.topicWords[i]+": " + prediction.topicWordsCoverage[i]+"%");
+                  }
+                  return body;
+                }
+            }
+          }
+      }
   });
 }
