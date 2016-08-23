@@ -4,7 +4,7 @@
 */
 var topic_inferencer_settings = {
   'inferencer_active': 1,
-  'endpoint' : 'http://localhost:8182/inference-service',
+  'endpoint' : 'http://de.dbpedia.org/topics/inference-service',
   'numTopics': 3
 };
 
@@ -49,6 +49,7 @@ function topic_inferencer_error_callback(resp) {
 }
 
 function topic_inferencer_success_callback(resp) {
+  console.log(resp);
   var predictions = sort(resp.predictions).slice(0,topic_inferencer_settings.numTopics);
   predictions.forEach(function (item, idx){
     predictions[idx].topicWordsCoverage.forEach(function (item2, idx2){
